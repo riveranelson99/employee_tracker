@@ -16,3 +16,11 @@
 -- Legal:
 -- row 7: 7, Sarah, Lourd, Legal Team Lead, Legal, 250000, null
 -- row 8: 8, Tom, Allen, Lawyer, Legal, 190000, Sarah Lourd
+
+DROP DATABASE IF EXISTS ;
+CREATE DATABASE ;
+USE ;
+
+CREATE TABLE (
+
+);
