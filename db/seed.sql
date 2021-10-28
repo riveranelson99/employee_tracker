@@ -12,9 +12,9 @@ VALUES ("Sales Lead", 100000, 001),
        ("Account Manager", 160000, 003),
        ("Accountant", 125000, 003),
        ("Legal Team Lead", 250000, 004),
-       ("Lawyer", 1900000, 004);
+       ("Lawyer", 190000, 004);
 
-INSERT INTO employee_db (first_name, last_name, role_id, manager_id)
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ("John", "Doe", 001, null),
        ("Mike", "Chan", 002, 001),
        ("Ashley", "Rodriguez", 003, null),
