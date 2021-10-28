@@ -89,7 +89,7 @@ function loadMainPrompt() {
         } else if (response.choice === "VIEW_EMPLOYEES_BY_DEPARTMENT") {
             employeesDepartmentPrompt();
         } else if (response.choice === "VIEW_EMPLOYEES_BY_MANGER") {
-            employeesByManagerPrompt();
+            employeesManagerPrompt();
         } else if (response.choice === "ADD_EMPLOYEE") {
             addEmployeePrompt();
         } else if (response.choice === "REMOVE_EMPLOYEE") {
@@ -97,7 +97,7 @@ function loadMainPrompt() {
         } else if (response.choice === "UPDATE_EMPLOYEE_ROLE") {
             updateEmployeePrompt();
         } else if (response.choice === "UPDATE_EMPLOYEE_MANAGER") {
-            updateEmployeeManagerPrompt();
+            updateManagerPrompt();
         } else if (response.choice === "VIEW_ROLES") {
             viewAllRoles();
         } else if (response.choice === "ADD_ROLE") {
@@ -121,18 +121,21 @@ function loadMainPrompt() {
 function viewAllEmployees () {
 // return the database of all employees
 // return to loadMainPrompt
+    loadMainPrompt();
 };
 
 function employeesDepartmentPrompt () {
 // return list of available departments
 // based on choice, return selected department table/db
 // return to loadMainPrompt
+    loadMainPrompt();
 };
 
-function employeesByManagerPrompt () {
+function employeesManagerPrompt () {
 // return list of all employees
 // based on choice, return selected employees manager status
 // return to loadMainPrompt
+    loadMainPrompt();
 };
 
 function addEmployeePrompt () {
@@ -142,48 +145,50 @@ function addEmployeePrompt () {
 // return a list of whom will be the new employees manager
 // add the employee to the database based on selection criteria
 // return to loadMainPrompt
+    loadMainPrompt();
 };
 
 function removeEmployeePrompt () {
 // return list of all employees
 // remove selected employee from the database
 // return to loadMainPrompt
+    loadMainPrompt();
 };
 
 function updateEmployeePrompt () {
-
+    loadMainPrompt();
 };
 
-function updateEmployeeManagerPrompt () {
-
+function updateManagerPrompt () {
+    loadMainPrompt();
 };
 
 function viewAllRoles () {
-
+    loadMainPrompt();
 };
 
 function addRolePrompt () {
-
+    loadMainPrompt();
 };
 
 function removeRolePrompt () {
-
+    loadMainPrompt();
 };
 
 function viewAllDepartments () {
-
+    loadMainPrompt();
 };
 
 function addDepartmentPrompt () {
-
+    loadMainPrompt();
 };
 
 function removeDepartmentPrompt () {
-
+    loadMainPrompt();
 };
 
 function viewTotalBudget () {
-
+    loadMainPrompt();
 };
 
 function quit () {
