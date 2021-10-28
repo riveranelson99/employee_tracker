@@ -84,6 +84,40 @@ function loadMainPrompt() {
             ]
         }
     ])
+
+    .then(response => {
+        if (response.choice === "VIEW_EMPLOYEES") {
+            viewAllEmployees();
+        } else if (response.choice === "VIEW_EMPLOYEES_BY_DEPARTMENT") {
+            employeesDepartmentPrompt();
+        } else if (response.choice === "VIEW_EMPLOYEES_BY_MANGER") {
+            employeesByManagerPrompt();
+        } else if (response.choice === "ADD_EMPLOYEE") {
+            addEmployeePrompt();
+        } else if (response.choice === "REMOVE_EMPLOYEE") {
+            removeEmployeePrompt();
+        } else if (response.choice === "UPDATE_EMPLOYEE_ROLE") {
+            updateEmployeePrompt();
+        } else if (response.choice === "UPDATE_EMPLOYEE_MANAGER") {
+            updateEmployeeManagerPrompt();
+        } else if (response.choice === "VIEW_ROLES") {
+            viewAllRoles();
+        } else if (response.choice === "ADD_ROLE") {
+            addRolePrompt();
+        } else if (response.choice === "REMOVE_ROLE") {
+            removeRolePrompt();
+        } else if (response.choice === "VIEW_DEPARTMENTS") {
+            viewAllDepartments();
+        } else if (response.choice === "ADD_DEPARTMENT") {
+            addDepartmentPrompt();
+        } else if (response.choice === "REMOVE_DEPARTMENT") {
+            removeDepartmentPrompt();
+        } else if (response.choice === "VIEW_TOTAL_BUDGET_BY_DEPARTMENT") {
+            viewTotalBudget();
+        } else {
+            quit();
+        }
+    })
 };
 
 function viewAllEmployees () {
