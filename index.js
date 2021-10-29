@@ -1,7 +1,6 @@
 const { prompt } = require("inquirer");
 const logo = require("asciiart-logo");
 const db = require("./db/connection");
-const { listenerCount } = require("./db/connection");
 require("console.table");
 
 init();
@@ -120,9 +119,17 @@ function loadMainPrompt() {
 };
 
 function viewAllEmployees () {
-// return the database of all employees
-// return to loadMainPrompt
-    loadMainPrompt(); //('SELECT', db)
+    db.query(`SELECT employee.id, employee.first_name, employee.last_name , role.title, department.name AS 'department', role.salary, CONCAT(manager.first_name, " " , manager.last_name) AS 'manager'
+    FROM employee LEFT JOIN role ON employee.role_id = role.id
+    LEFT JOIN department ON role.department_id = department.id
+    LEFT JOIN employee manager ON manager.id = employee.manager_id;`, (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.table(res);
+            loadMainPrompt();
+        }
+    })
 };
 
 function employeesDepartmentPrompt () {
@@ -140,13 +147,94 @@ function employeesManagerPrompt () {
 };
 
 function addEmployeePrompt () {
-// ask user the employees first name
-// ask user the employees last name
-// return a list of available positions (Sales Lead, Salesperson, Lead Engineer, etc.)
-// return a list of whom will be the new employees manager
-// add the employee to the database based on selection criteria
-// return to loadMainPrompt
-    loadMainPrompt(); //('INSERT', db)
+    prompt([
+        {
+            name: "first_name",
+            message: "What is the employee's first name?"
+        },
+        {
+            name: "last_name",
+            message: "What is the employee's last name?"
+        },
+        {
+            type: "list",
+            name: "role",
+            message: "What is the employee's role?",
+            choices: [
+                {
+                    name: "Sales Lead",
+                    value: "001"
+                },
+                {
+                    name: "Salesperson",
+                    value: "002"
+                },
+                {
+                    name: "Lead Engineer",
+                    value: "003"
+                },
+                {
+                    name: "Software Engineer",
+                    value: "004"
+                },
+                {
+                    name: "Account Manager",
+                    value: "005"
+                },
+                {
+                    name: "Accountant",
+                    value: "006"
+                },
+                {
+                    name: "Legal Team Lead",
+                    value: "007"
+                },
+                {
+                    name: "Lawyer",
+                    value: "008"
+                }
+            ]
+        },
+        {
+            type: "list",
+            name: "manager",
+            message: "Who is the employee's manager?",
+            choices: [
+                {
+                    name: "John Doe",
+                    value: "001"
+                },
+                {
+                    name: "Ashley Rodriguez",
+                    value: "002"
+                },
+                {
+                    name: "Kunal Singh",
+                    value: "003"
+                },
+                {
+                    name: "Sarah Lourd",
+                    value: "004"
+                },
+                {
+                    name: "None",
+                    value: null
+                }
+            ]
+        }
+    ])
+
+    .then(res => {
+        console.log(res);
+        db.query(`INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUE (?, ?, ?, ?)`, [res.first_name, res.last_name, res.role, res.manager], (err, res) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.table(res);
+                loadMainPrompt();
+            }
+        });
+    })
 };
 
 function removeEmployeePrompt () {
@@ -167,13 +255,12 @@ function updateManagerPrompt () {
 function viewAllRoles () {
     db.query(`SELECT role.id, role.title, department.name, role.salary FROM role INNER JOIN department ON role.department_id = department.id;`, (err, res) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            console.table(res)
+            console.table(res);
+            loadMainPrompt();
         }
     });
-
-    loadMainPrompt();
 };
 
 function addRolePrompt () {
@@ -221,7 +308,6 @@ function addRolePrompt () {
                 loadMainPrompt(); 
             }
         });
-
     })
 };
 
@@ -230,7 +316,14 @@ function removeRolePrompt () {
 };
 
 function viewAllDepartments () {
-    loadMainPrompt();
+    db.query(`SELECT department.id, department.name FROM department;`, (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.table(res);
+            loadMainPrompt();
+        }
+    })
 };
 
 function addDepartmentPrompt () {
@@ -242,7 +335,14 @@ function removeDepartmentPrompt () {
 };
 
 function viewTotalBudget () {
-    loadMainPrompt();
+    db.query(`SELECT department.id, department.name, SUM(role.salary) AS utilized_budget FROM department, role WHERE role.department_id=department.id GROUP BY department.id ORDER BY department.id;`, (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.table(res);
+            loadMainPrompt();
+        }
+    })
 };
 
 function quit () {
