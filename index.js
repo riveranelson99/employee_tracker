@@ -1,6 +1,7 @@
 const { prompt } = require("inquirer");
 const logo = require("asciiart-logo");
-const db = require("./db");
+const db = require("./db/connection");
+const { listenerCount } = require("./db/connection");
 require("console.table");
 
 init();
@@ -121,21 +122,21 @@ function loadMainPrompt() {
 function viewAllEmployees () {
 // return the database of all employees
 // return to loadMainPrompt
-    loadMainPrompt();
+    loadMainPrompt(); //('SELECT', db)
 };
 
 function employeesDepartmentPrompt () {
 // return list of available departments
 // based on choice, return selected department table/db
 // return to loadMainPrompt
-    loadMainPrompt();
+    loadMainPrompt(); //('SELECT', db)
 };
 
 function employeesManagerPrompt () {
 // return list of all employees
 // based on choice, return selected employees manager status
 // return to loadMainPrompt
-    loadMainPrompt();
+    loadMainPrompt(); //('SELECT', db)
 };
 
 function addEmployeePrompt () {
@@ -145,18 +146,18 @@ function addEmployeePrompt () {
 // return a list of whom will be the new employees manager
 // add the employee to the database based on selection criteria
 // return to loadMainPrompt
-    loadMainPrompt();
+    loadMainPrompt(); //('INSERT', db)
 };
 
 function removeEmployeePrompt () {
 // return list of all employees
 // remove selected employee from the database
 // return to loadMainPrompt
-    loadMainPrompt();
+    loadMainPrompt(); //('DELETE', db)
 };
 
 function updateEmployeePrompt () {
-    loadMainPrompt();
+    loadMainPrompt(); //('UPDATE', db)
 };
 
 function updateManagerPrompt () {
@@ -164,11 +165,64 @@ function updateManagerPrompt () {
 };
 
 function viewAllRoles () {
+    db.query(`SELECT role.id, role.title, department.name, role.salary FROM role INNER JOIN department ON role.department_id = department.id;`, (err, res) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.table(res)
+        }
+    });
+
     loadMainPrompt();
 };
 
 function addRolePrompt () {
-    loadMainPrompt();
+    prompt([
+        {
+            name: "title",
+            message: "What is the title of the role you would like to add?",
+        },
+        {
+            name: "salary",
+            message: "What is the salary of the role?",
+        },
+        {
+            type: "list",
+            name: "department",
+            message: "To which department does this role belong?",
+            choices: [
+                {
+                    name: "Sales",
+                    value: "001"
+                },
+                {
+                    name: "Engineering",
+                    value: "002"
+                },
+                {
+                    name: "Finance",
+                    value: "003"
+                },
+                {
+                    name: "Legal",
+                    value: "004"
+                }
+            ]
+        }
+    ])
+
+    .then(res => {
+        console.log(res);
+        db.query("INSERT INTO role(title, salary, department_id) VALUE (?, ?, ?)", [res.title, res.salary, res.department], (err, res) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.table(res);
+                loadMainPrompt(); 
+            }
+        });
+
+    })
 };
 
 function removeRolePrompt () {
