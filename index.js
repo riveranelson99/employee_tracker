@@ -24,6 +24,14 @@ function loadMainPrompt() {
                     value: "VIEW_EMPLOYEES"
                 },
                 {
+                    name: "View All Departments",
+                    value: "VIEW_DEPARTMENTS"
+                },
+                {
+                    name: "View All Roles",
+                    value: "VIEW_ROLES"
+                },
+                {
                     name: "View All Employees By Department",
                     value: "VIEW_EMPLOYEES_BY_DEPARTMENT"
                 },
@@ -36,8 +44,12 @@ function loadMainPrompt() {
                     value: "ADD_EMPLOYEE"
                 },
                 {
-                    name: "Remove Employee",
-                    value: "REMOVE_EMPLOYEE"
+                    name: "Add Department",
+                    value: "ADD_DEPARTMENT"
+                },
+                {
+                    name: "Add Role",
+                    value: "ADD_ROLE"
                 },
                 {
                     name: "Update Employee Role",
@@ -48,24 +60,12 @@ function loadMainPrompt() {
                     value: "UPDATE_EMPLOYEE_MANAGER"
                 },
                 {
-                    name: "View All Roles",
-                    value: "VIEW_ROLES"
-                },
-                {
-                    name: "Add Role",
-                    value: "ADD_ROLE"
+                    name: "Remove Employee",
+                    value: "REMOVE_EMPLOYEE"
                 },
                 {
                     name: "Remove Role",
                     value: "REMOVE_ROLE"
-                },
-                {
-                    name: "View All Departments",
-                    value: "VIEW_DEPARTMENTS"
-                },
-                {
-                    name: "Add Department",
-                    value: "ADD_DEPARTMENT"
                 },
                 {
                     name: "Remove Department",
