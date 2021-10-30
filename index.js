@@ -166,10 +166,6 @@ function employeesDepartmentPrompt () {
             }
         })
     })
-// return list of available departments
-// based on choice, return selected department table/db
-// return to loadMainPrompt
-    // loadMainPrompt(); //('SELECT', db)
 };
 
 function employeesManagerPrompt () {
@@ -225,10 +221,6 @@ function employeesManagerPrompt () {
             }
         })
     })
-// return list of all employees
-// based on choice, return selected employees manager status
-// return to loadMainPrompt
-    // loadMainPrompt(); //('SELECT', db)
 };
 
 function addEmployeePrompt () {
@@ -483,5 +475,8 @@ function viewTotalBudget () {
 };
 
 function quit () {
+    const logoText = logo({ name: "Goodbye" }).render();
 
+    console.log(logoText);
+    process.exit();
 };
