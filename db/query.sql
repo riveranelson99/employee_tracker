@@ -1,17 +1,23 @@
+-- THIS PAGE SERVES AS A QUERY TEST GROUND BEFORE INCORPORATING IT INTO THE MAIN INDEX FILE --
+-- THERE IS NO STRUCTURE TO BE FOUND HERE, ONLY BRAINSTORMING --
+
 -- SELECT
 --     employee.id, employee.first_name, employee.last_name , role.title, department.name AS 'department', role.salary, CONCAT(manager.first_name, " " , manager.last_name) AS 'manager'
 --     FROM employee LEFT JOIN role ON employee.role_id = role.id
 --     LEFT JOIN department ON role.department_id = department.id
 --     LEFT JOIN employee manager ON manager.id = employee.manager_id;
 
--- SELECT manager.id, manager.first_name, manager.last_name
--- FROM employee
--- LEFT JOIN employee manager ON manager.id = employee.manager_id
--- WHERE manager.id IS NOT NULL;
-
-SELECT employee.id, employee.first_name, employee.last_name, department.name AS 'department', role.title
+SELECT manager.id, manager.first_name, manager.last_name
 FROM employee
-LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE employee.manager_id = ;
+LEFT JOIN employee manager ON manager.id = employee.manager_id
+WHERE manager.id IS NOT NULL;
+
+SELECT role.id, role.title FROM role;
+
+-- SELECT employee.id, employee.first_name, employee.last_name, department.name AS 'department', role.title
+-- FROM employee
+-- LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE employee.manager_id = ;
+
 -- SELECT role.id, role.title, department.name, role.salary
 --     FROM role INNER JOIN department ON role.department_id = department.id;
 

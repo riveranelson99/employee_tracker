@@ -224,91 +224,54 @@ function employeesManagerPrompt () {
 };
 
 function addEmployeePrompt () {
-    prompt([
-        {
-            name: "first_name",
-            message: "What is the employee's first name?"
-        },
-        {
-            name: "last_name",
-            message: "What is the employee's last name?"
-        },
-        {
-            type: "list",
-            name: "role",
-            message: "What is the employee's role?",
-            choices: [
-                {
-                    name: "Sales Lead",
-                    value: "001"
-                },
-                {
-                    name: "Salesperson",
-                    value: "002"
-                },
-                {
-                    name: "Lead Engineer",
-                    value: "003"
-                },
-                {
-                    name: "Software Engineer",
-                    value: "004"
-                },
-                {
-                    name: "Account Manager",
-                    value: "005"
-                },
-                {
-                    name: "Accountant",
-                    value: "006"
-                },
-                {
-                    name: "Legal Team Lead",
-                    value: "007"
-                },
-                {
-                    name: "Lawyer",
-                    value: "008"
-                }
-            ]
-        },
-        {
-            type: "list",
-            name: "manager",
-            message: "Who is the employee's manager?",
-            choices: [
-                {
-                    name: "John Doe",
-                    value: "001"
-                },
-                {
-                    name: "Ashley Rodriguez",
-                    value: "003"
-                },
-                {
-                    name: "Kunal Singh",
-                    value: "005"
-                },
-                {
-                    name: "Sarah Lourd",
-                    value: "007"
-                },
-                {
-                    name: "None",
-                    value: null
-                }
-            ]
-        }
-    ])
+    db.query(`SELECT role.id, role.title FROM role;`, (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const role = res.map(role => ({name: role.title, value: role.id}));
 
-    .then(res => {
-        db.query(`INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUE (?, ?, ?, ?)`, [res.first_name, res.last_name, res.role, res.manager], (err, res) => {
-            if (err) {
-                console.log(err);
-            } else {
-                loadMainPrompt();
-            }
-        });
+            db.query(`SELECT manager.id, manager.first_name, manager.last_name FROM employee LEFT JOIN employee manager ON manager.id = employee.manager_id WHERE manager.id IS NOT NULL;`, (err, res) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    res.push({first_name: "None", last_name: "", id: null});
+                    const manager = res.map(manager => ({name: manager.first_name + " " + manager.last_name, value: manager.id}));
+
+                    prompt([
+                        {
+                            name: "first_name",
+                            message: "What is the employee's first name?"
+                        },
+                        {
+                            name: "last_name",
+                            message: "What is the employee's last name?"
+                        },
+                        {
+                            type: "list",
+                            name: "role",
+                            message: "What is the employee's role?",
+                            choices: role
+                        },
+                        {
+                            type: "list",
+                            name: "manager",
+                            message: "Who is the employee's manager?",
+                            choices: manager
+                        }
+                    ])
+
+                    .then(res => {
+                        db.query(`INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUE (?, ?, ?, ?)`, [res.first_name, res.last_name, res.role, res.manager], (err, res) => {
+                            if (err) {
+                                console.log(err)
+                            } else {
+                                loadMainPrompt();
+                            }
+                        })
+                    })
+                }
+            })
+        }
     })
 };
 
@@ -324,37 +287,31 @@ function updateEmployeePrompt () {
         if (err) {
             console.log(err);
         } else {
-            const employeeNames = [];            
-            res.forEach(employee => {
-                employeeNames.push(employee.id + ": " + employee.first_name + " " + employee.last_name)
-            });
-
-            db.query(`SELECT role.id, role.title FROM role`, (err, res) => {
+            const employee = res.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}));
+            
+            db.query(`SELECT role.id, role.title FROM role;`, (err, res) => {
                 if (err) {
                     console.log(err);
                 } else {
-                    const employeeRoles = [];
-                    res.forEach(role => {
-                        employeeRoles.push(role.id + ": " + role.title)
-                    });
+                    const role = res.map(role => ({name: role.title, value: role.id}));
 
                     prompt([
                         {
                             type: "list",
                             name: "employee",
                             message: "Which employee would you like to update?",
-                            choices: employeeNames
+                            choices: employee
                         },
                         {
                             type: "list",
                             name: "role",
                             message: "What will be the employee's new role?",
-                            choices: employeeRoles
+                            choices: role
                         }
                     ])
-        
+
                     .then(res => {
-                        db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [res.role[0], res.employee[0]], (err, res) => {
+                        db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [res.role, res.employee], (err, res) => {
                             if (err) {
                                 console.log(err);
                             } else {
@@ -363,7 +320,6 @@ function updateEmployeePrompt () {
                         })
                     })
                 }
-                
             })
         }
     })
@@ -389,10 +345,7 @@ function addRolePrompt () {
         if (err) {
             console.log(err);
         } else {
-            const depName = [];
-            res.forEach(department => {
-                depName.push(department.id + ": " + department.name)
-            });
+            const depName = res.map(department => ({name: department.name, value: department.id}));
 
             prompt([
                 {
@@ -412,8 +365,7 @@ function addRolePrompt () {
             ])
         
             .then(res => {
-                console.log(res);
-                db.query("INSERT INTO role(title, salary, department_id) VALUE (?, ?, ?)", [res.title, res.salary, res.department[0]], (err, res) => {
+                db.query("INSERT INTO role(title, salary, department_id) VALUE (?, ?, ?)", [res.title, res.salary, res.department], (err, res) => {
                     if (err) {
                         console.log(err);
                     } else {
