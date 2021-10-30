@@ -119,10 +119,7 @@ function loadMainPrompt() {
 };
 
 function viewAllEmployees () {
-    db.query(`SELECT employee.id, employee.first_name, employee.last_name , role.title, department.name AS 'department', role.salary, CONCAT(manager.first_name, " " , manager.last_name) AS 'manager'
-    FROM employee LEFT JOIN role ON employee.role_id = role.id
-    LEFT JOIN department ON role.department_id = department.id
-    LEFT JOIN employee manager ON manager.id = employee.manager_id;`, (err, res) => {
+    db.query(`SELECT employee.id, employee.first_name, employee.last_name , role.title, department.name AS 'department', role.salary, CONCAT(manager.first_name, " " , manager.last_name) AS 'manager' FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id;`, (err, res) => {
         if (err) {
             console.log(err);
         } else {
@@ -206,15 +203,15 @@ function addEmployeePrompt () {
                 },
                 {
                     name: "Ashley Rodriguez",
-                    value: "002"
-                },
-                {
-                    name: "Kunal Singh",
                     value: "003"
                 },
                 {
+                    name: "Kunal Singh",
+                    value: "005"
+                },
+                {
                     name: "Sarah Lourd",
-                    value: "004"
+                    value: "007"
                 },
                 {
                     name: "None",
@@ -225,12 +222,10 @@ function addEmployeePrompt () {
     ])
 
     .then(res => {
-        console.log(res);
         db.query(`INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUE (?, ?, ?, ?)`, [res.first_name, res.last_name, res.role, res.manager], (err, res) => {
             if (err) {
                 console.log(err);
             } else {
-                console.table(res);
                 loadMainPrompt();
             }
         });
@@ -260,12 +255,8 @@ function updateEmployeePrompt () {
                 } else {
                     const employeeRoles = [];
                     res.forEach(role => {
-                        console.log(role);
                         employeeRoles.push(role.id + ": " + role.title)
                     });
-
-                    console.log(employeeNames);
-                    console.log(employeeRoles);
 
                     prompt([
                         {
@@ -283,12 +274,10 @@ function updateEmployeePrompt () {
                     ])
         
                     .then(res => {
-                        console.log(res);
                         db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [res.role[0], res.employee[0]], (err, res) => {
                             if (err) {
                                 console.log(err);
                             } else {
-                                console.table(res);
                                 loadMainPrompt();
                             }
                         })
@@ -356,7 +345,6 @@ function addRolePrompt () {
             if (err) {
                 console.log(err);
             } else {
-                console.table(res);
                 loadMainPrompt(); 
             }
         });
@@ -391,7 +379,6 @@ function addDepartmentPrompt () {
             if (err) {
                 console.log(err);
             } else {
-                console.table(res);
                 loadMainPrompt();
             }
         })
