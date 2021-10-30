@@ -7,16 +7,18 @@
 --     LEFT JOIN department ON role.department_id = department.id
 --     LEFT JOIN employee manager ON manager.id = employee.manager_id;
 
-SELECT manager.id, manager.first_name, manager.last_name
-FROM employee
-LEFT JOIN employee manager ON manager.id = employee.manager_id
-WHERE manager.id IS NOT NULL;
+-- SELECT manager.id, manager.first_name, manager.last_name
+-- FROM employee
+-- LEFT JOIN employee manager ON manager.id = employee.manager_id
+-- WHERE manager.id IS NOT NULL;
 
-SELECT role.id, role.title FROM role;
+-- SELECT role.id, role.title FROM role;
+
+-- SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id FROM employee;
 
 -- SELECT employee.id, employee.first_name, employee.last_name, department.name AS 'department', role.title
 -- FROM employee
--- LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE employee.manager_id = ;
+-- LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE employee.manager_id = 1;
 
 -- SELECT role.id, role.title, department.name, role.salary
 --     FROM role INNER JOIN department ON role.department_id = department.id;

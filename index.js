@@ -130,96 +130,62 @@ function viewAllEmployees () {
 };
 
 function employeesDepartmentPrompt () {
-    prompt([
-        {
-            type: "list",
-            name: "department",
-            message: "Which department would you like to see employee's for?",
-            choices: [
-                {
-                    name: "Sales",
-                    value: "001"
-                },
-                {
-                    name: "Engineering",
-                    value: "002"
-                },
-                {
-                    name: "Finance",
-                    value: "003"
-                },
-                {
-                    name: "Legal",
-                    value: "004"
-                }
-            ]
-        }
-    ])
+    db.query(`SELECT department.id, department.name FROM department;`, (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const depName = res.map(department => ({name: department.name, value: department.id}));
 
-    .then(res => {
-        db.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE department.id = ?`, res.department, (err, res) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.table(res);
-                loadMainPrompt();
-            }
-        })
+            prompt([
+                {
+                    type: "list",
+                    name: "department",
+                    message: "Which department would you like to see employee's for?",
+                    choices: depName
+                }
+            ])
+        
+            .then(res => {
+                db.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE department.id = ?`, res.department, (err, res) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.table(res);
+                        loadMainPrompt();
+                    }
+                })
+            })
+        }
     })
 };
 
 function employeesManagerPrompt () {
-    prompt([
-        {
-            type: "list",
-            name: "manager",
-            message: "Which employee do you want to see direct reports for?",
-            choices: [
-                {
-                    name: "John Doe",
-                    value: "001"
-                },
-                {
-                    name: "Mike Chan",
-                    value: "null"
-                },
-                {
-                    name: "Ashley Rodriguez",
-                    value: "003"
-                },
-                {
-                    name: "Kevin Tupik",
-                    value: "null"
-                },
-                {
-                    name: "Kunal Singh",
-                    value: "005"
-                },
-                {
-                    name: "Malia Brown",
-                    value: "null"
-                },
-                {
-                    name: "Sarah Lourd",
-                    value: "007"
-                },
-                {
-                    name: "Tom Allen",
-                    value: "null"
-                }
-            ]
-        }
-    ])
+    db.query(`SELECT employee.id, employee.first_name, employee.last_name FROM employee;`, (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const employees = res.map(employees => ({name: employees.first_name + " " + employees.last_name, value: employees.id}));
 
-    .then(res => {
-        db.query(`SELECT employee.id, employee.first_name, employee.last_name, department.name AS 'department', role.title FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE employee.manager_id = ?;`, res.manager, (err, res) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.table(res);
-                loadMainPrompt();
-            }
-        })
+            prompt([
+                {
+                    type: "list",
+                    name: "manager",
+                    message: "Which employee do you want to see direct reports for?",
+                    choices: employees
+                }
+            ])
+        
+            .then(res => {
+                db.query(`SELECT employee.id, employee.first_name, employee.last_name, department.name AS 'department', role.title FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE employee.manager_id = ?;`, res.manager, (err, res) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.table(res);
+                        loadMainPrompt();
+                    }
+                })
+            })
+        }
     })
 };
 
@@ -341,7 +307,7 @@ function viewAllRoles () {
 };
 
 function addRolePrompt () {
-    db.query(`SELECT department.id, department.name FROM department`, (err, res) => {
+    db.query(`SELECT department.id, department.name FROM department;`, (err, res) => {
         if (err) {
             console.log(err);
         } else {
