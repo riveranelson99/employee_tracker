@@ -24,9 +24,11 @@
 --     HAVING SUM(ORDERAMOUNT)>5000
 -- )
 
-SELECT department.id, department.name,
-SUM(role.salary) AS utilized_budget
-FROM department, role
-WHERE role.department_id=department.id
-GROUP BY department.id
-ORDER BY department.id;
+-- SELECT department.id, department.name,
+-- SUM(role.salary) AS utilized_budget
+-- FROM department, role
+-- WHERE role.department_id=department.id
+-- GROUP BY department.id
+-- ORDER BY department.id;
+
+SELECT employee.id, first_name, last_name, title, role_id FROM employee;

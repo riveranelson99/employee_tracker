@@ -245,7 +245,49 @@ function removeEmployeePrompt () {
 };
 
 function updateEmployeePrompt () {
-    loadMainPrompt(); //('UPDATE', db)
+    db.query(`SELECT employee.id, first_name, last_name, title, role_id FROM employee INNER JOIN role ON role_id = role.id;`, (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const employeeNames = [];            
+            res.forEach(employee => {
+                employeeNames.push(employee.id + ": " + employee.first_name + " " + employee.last_name)
+            });
+
+            const employeeRoles = [];
+            res.forEach(role => {
+                // console.log(role);
+                employeeRoles.push(role.role_id + ": " + role.title)
+            });
+
+        prompt([
+            {
+                type: "list",
+                name: "employee",
+                message: "Which employee would you like to update?",
+                choices: employeeNames
+            },
+            {
+                type: "list",
+                name: "role",
+                message: "What will be the employee's new role?",
+                choices: employeeRoles
+            }
+        ])
+
+        .then(res => {
+            // console.log(res);
+            db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [res.role[0], res.employee[0]], (err, res) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.table(res);
+                    loadMainPrompt();
+                }
+            })
+        })
+    }
+    })
 };
 
 function updateManagerPrompt () {
@@ -327,7 +369,23 @@ function viewAllDepartments () {
 };
 
 function addDepartmentPrompt () {
-    loadMainPrompt();
+    prompt([
+        {
+            name: "name",
+            message: "What is the name of the department?"
+        }
+    ])
+
+    .then(res => {
+        db.query(`INSERT INTO department(name) VALUE (?)`, res.name, (err, res) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.table(res);
+                loadMainPrompt();
+            }
+        })
+    })
 };
 
 function removeDepartmentPrompt () {
