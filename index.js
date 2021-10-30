@@ -292,35 +292,36 @@ function updateEmployeePrompt () {
 };
 
 function updateManagerPrompt () {
-    db.query(`SELECT manager.id, manager.first_name, manager.last_name FROM employee LEFT JOIN employee manager ON manager.id = employee.manager_id WHERE manager.id IS NOT NULL;`, (err,res) => {
+    db.query(`SELECT employee.id, first_name, last_name FROM employee;`, (err,res) => {
         if (err) {
             console.log(err);
         } else {
-            const managers = res.map(manager => ({name: manager.first_name + " " + manager.last_name, value: manager.id}));
+            const employees = res.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}));
 
-            db.query(`SELECT role.id, role.title FROM role;`, (err, res) => {
+            db.query(`SELECT manager.id, manager.first_name, manager.last_name FROM employee LEFT JOIN employee manager ON manager.id = employee.manager_id WHERE manager.id IS NOT NULL;`, (err, res) => {
                 if (err) {
                     console.log(err);
                 } else {
-                    const role = res.map(role => ({name: role.title, value: role.id}));
+                    res.push({first_name: "None", last_name: "", id: null});
+                    const managers = res.map(manager => ({name: manager.first_name + " " + manager.last_name, value: manager.id})); 
 
                     prompt([
                         {
                             type: "list",
-                            name: "managers",
-                            message: "Which manager would you like to update?",
-                            choices: managers
+                            name: "employee",
+                            message: "Which employee would you like to change the manager status of?",
+                            choices: employees
                         },
                         {
                             type: "list",
-                            name: "role",
-                            message: "What will be the manager's new role?",
-                            choices: role
+                            name: "manager",
+                            message: "Whom will be the employee's manager?",
+                            choices: managers
                         }
                     ])
 
                     .then(res => {
-                        db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [res.role, res.managers], (err, res) => {
+                        db.query(`UPDATE employee SET manager_id = ? WHERE id = ?`, [res.manager, res.employee], (err, res) => {
                             if (err) {
                                 console.log(err);
                             } else {
