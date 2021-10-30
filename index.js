@@ -292,7 +292,46 @@ function updateEmployeePrompt () {
 };
 
 function updateManagerPrompt () {
-    loadMainPrompt();
+    db.query(`SELECT manager.id, manager.first_name, manager.last_name FROM employee LEFT JOIN employee manager ON manager.id = employee.manager_id WHERE manager.id IS NOT NULL;`, (err,res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const managers = res.map(manager => ({name: manager.first_name + " " + manager.last_name, value: manager.id}));
+
+            db.query(`SELECT role.id, role.title FROM role;`, (err, res) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    const role = res.map(role => ({name: role.title, value: role.id}));
+
+                    prompt([
+                        {
+                            type: "list",
+                            name: "managers",
+                            message: "Which manager would you like to update?",
+                            choices: managers
+                        },
+                        {
+                            type: "list",
+                            name: "role",
+                            message: "What will be the manager's new role?",
+                            choices: role
+                        }
+                    ])
+
+                    .then(res => {
+                        db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [res.role, res.managers], (err, res) => {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                loadMainPrompt();
+                            }
+                        })
+                    })
+                }
+            })
+        }
+    })
 };
 
 function viewAllRoles () {
