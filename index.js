@@ -242,10 +242,32 @@ function addEmployeePrompt () {
 };
 
 function removeEmployeePrompt () {
-// return list of all employees
-// remove selected employee from the database
-// return to loadMainPrompt
-    loadMainPrompt(); //('DELETE', db)
+    db.query(`SELECT employee.id, first_name, last_name FROM employee`, (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const employees = res.map(employee => ({name: employee.first_name + " " + employee.last_name, value: employee.id}));
+
+            prompt([
+                {
+                    type: "list",
+                    name: "employee",
+                    message: "Which employee would you like to remove?",
+                    choices: employees
+                }
+            ])
+
+            .then(res => {
+                db.query(`DELETE FROM employee WHERE id = ?`, res.employee, (err, res) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        loadMainPrompt();
+                    }
+                })
+            })
+        }
+    })
 };
 
 function updateEmployeePrompt () {
@@ -384,7 +406,32 @@ function addRolePrompt () {
 };
 
 function removeRolePrompt () {
-    loadMainPrompt();
+    db.query(`SELECT role.id, role.title FROM role`, (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const role = res.map(role => ({name: role.title, value: role.id}));
+
+            prompt([
+                {
+                    type: "list",
+                    name: "role",
+                    message: "Which role would you like to remove?",
+                    choices: role
+                }
+            ])
+
+            .then(res => {
+                db.query(`DELETE FROM role WHERE id = ?`, res.role, (err, res) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        loadMainPrompt();
+                    }
+                })
+            })
+        }
+    })
 };
 
 function viewAllDepartments () {
@@ -418,7 +465,32 @@ function addDepartmentPrompt () {
 };
 
 function removeDepartmentPrompt () {
-    loadMainPrompt();
+    db.query(`SELECT department.id, department.name FROM department;`, (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const depName = res.map(department => ({name: department.name, value: department.id}));
+
+            prompt([
+                {
+                    type: "list",
+                    name: "department",
+                    message: "Which department would you like to remove?",
+                    choices: depName
+                }
+            ])
+
+            .then(res => {
+                db.query(`DELETE FROM department WHERE id = ?`, res.department, (err, res) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        loadMainPrompt();
+                    }
+                })
+            })
+        }
+    })
 };
 
 function viewTotalBudget () {
