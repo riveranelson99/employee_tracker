@@ -161,7 +161,7 @@ function employeesDepartmentPrompt () {
             if (err) {
                 console.log(err);
             } else {
-                console.table(res)
+                console.table(res);
                 loadMainPrompt();
             }
         })
@@ -173,10 +173,62 @@ function employeesDepartmentPrompt () {
 };
 
 function employeesManagerPrompt () {
+    prompt([
+        {
+            type: "list",
+            name: "manager",
+            message: "Which employee do you want to see direct reports for?",
+            choices: [
+                {
+                    name: "John Doe",
+                    value: "001"
+                },
+                {
+                    name: "Mike Chan",
+                    value: "null"
+                },
+                {
+                    name: "Ashley Rodriguez",
+                    value: "003"
+                },
+                {
+                    name: "Kevin Tupik",
+                    value: "null"
+                },
+                {
+                    name: "Kunal Singh",
+                    value: "005"
+                },
+                {
+                    name: "Malia Brown",
+                    value: "null"
+                },
+                {
+                    name: "Sarah Lourd",
+                    value: "007"
+                },
+                {
+                    name: "Tom Allen",
+                    value: "null"
+                }
+            ]
+        }
+    ])
+
+    .then(res => {
+        db.query(`SELECT employee.id, employee.first_name, employee.last_name, department.name AS 'department', role.title FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE employee.manager_id = ?;`, res.manager, (err, res) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.table(res);
+                loadMainPrompt();
+            }
+        })
+    })
 // return list of all employees
 // based on choice, return selected employees manager status
 // return to loadMainPrompt
-    loadMainPrompt(); //('SELECT', db)
+    // loadMainPrompt(); //('SELECT', db)
 };
 
 function addEmployeePrompt () {

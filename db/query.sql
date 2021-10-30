@@ -9,7 +9,9 @@
 -- LEFT JOIN employee manager ON manager.id = employee.manager_id
 -- WHERE manager.id IS NOT NULL;
 
-SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE department.id = 3;
+SELECT employee.id, employee.first_name, employee.last_name, department.name AS 'department', role.title
+FROM employee
+LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE employee.manager_id = ;
 -- SELECT role.id, role.title, department.name, role.salary
 --     FROM role INNER JOIN department ON role.department_id = department.id;
 
