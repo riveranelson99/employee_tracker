@@ -285,7 +285,7 @@ function updateEmployeePrompt () {
                 }
                 
             })
-    }
+        }
     })
 };
 
@@ -305,49 +305,43 @@ function viewAllRoles () {
 };
 
 function addRolePrompt () {
-    prompt([
-        {
-            name: "title",
-            message: "What is the title of the role you would like to add?",
-        },
-        {
-            name: "salary",
-            message: "What is the salary of the role?",
-        },
-        {
-            type: "list",
-            name: "department",
-            message: "To which department does this role belong?",
-            choices: [
-                {
-                    name: "Sales",
-                    value: "001"
-                },
-                {
-                    name: "Engineering",
-                    value: "002"
-                },
-                {
-                    name: "Finance",
-                    value: "003"
-                },
-                {
-                    name: "Legal",
-                    value: "004"
-                }
-            ]
-        }
-    ])
+    db.query(`SELECT department.id, department.name FROM department`, (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const depName = [];
+            res.forEach(department => {
+                depName.push(department.id + ": " + department.name)
+            });
 
-    .then(res => {
-        console.log(res);
-        db.query("INSERT INTO role(title, salary, department_id) VALUE (?, ?, ?)", [res.title, res.salary, res.department], (err, res) => {
-            if (err) {
-                console.log(err);
-            } else {
-                loadMainPrompt(); 
-            }
-        });
+            prompt([
+                {
+                    name: "title",
+                    message: "What is the title of the role you would like to add?",
+                },
+                {
+                    name: "salary",
+                    message: "What is the salary of the role?",
+                },
+                {
+                    type: "list",
+                    name: "department",
+                    message: "To which department does this role belong?",
+                    choices: depName
+                }
+            ])
+        
+            .then(res => {
+                console.log(res);
+                db.query("INSERT INTO role(title, salary, department_id) VALUE (?, ?, ?)", [res.title, res.salary, res.department[0]], (err, res) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        loadMainPrompt(); 
+                    }
+                });
+            })
+        }
     })
 };
 
