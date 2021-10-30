@@ -130,10 +130,46 @@ function viewAllEmployees () {
 };
 
 function employeesDepartmentPrompt () {
+    prompt([
+        {
+            type: "list",
+            name: "department",
+            message: "Which department would you like to see employee's for?",
+            choices: [
+                {
+                    name: "Sales",
+                    value: "001"
+                },
+                {
+                    name: "Engineering",
+                    value: "002"
+                },
+                {
+                    name: "Finance",
+                    value: "003"
+                },
+                {
+                    name: "Legal",
+                    value: "004"
+                }
+            ]
+        }
+    ])
+
+    .then(res => {
+        db.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE department.id = ?`, res.department, (err, res) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.table(res)
+                loadMainPrompt();
+            }
+        })
+    })
 // return list of available departments
 // based on choice, return selected department table/db
 // return to loadMainPrompt
-    loadMainPrompt(); //('SELECT', db)
+    // loadMainPrompt(); //('SELECT', db)
 };
 
 function employeesManagerPrompt () {
