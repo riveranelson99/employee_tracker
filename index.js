@@ -245,7 +245,7 @@ function removeEmployeePrompt () {
 };
 
 function updateEmployeePrompt () {
-    db.query(`SELECT employee.id, first_name, last_name, title, role_id FROM employee INNER JOIN role ON role_id = role.id;`, (err, res) => {
+    db.query(`SELECT employee.id, first_name, last_name FROM employee;`, (err, res) => {
         if (err) {
             console.log(err);
         } else {
@@ -254,38 +254,48 @@ function updateEmployeePrompt () {
                 employeeNames.push(employee.id + ": " + employee.first_name + " " + employee.last_name)
             });
 
-            const employeeRoles = [];
-            res.forEach(role => {
-                // console.log(role);
-                employeeRoles.push(role.role_id + ": " + role.title)
-            });
-
-        prompt([
-            {
-                type: "list",
-                name: "employee",
-                message: "Which employee would you like to update?",
-                choices: employeeNames
-            },
-            {
-                type: "list",
-                name: "role",
-                message: "What will be the employee's new role?",
-                choices: employeeRoles
-            }
-        ])
-
-        .then(res => {
-            // console.log(res);
-            db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [res.role[0], res.employee[0]], (err, res) => {
+            db.query(`SELECT role.id, role.title FROM role`, (err, res) => {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.table(res);
-                    loadMainPrompt();
+                    const employeeRoles = [];
+                    res.forEach(role => {
+                        console.log(role);
+                        employeeRoles.push(role.id + ": " + role.title)
+                    });
+
+                    console.log(employeeNames);
+                    console.log(employeeRoles);
+
+                    prompt([
+                        {
+                            type: "list",
+                            name: "employee",
+                            message: "Which employee would you like to update?",
+                            choices: employeeNames
+                        },
+                        {
+                            type: "list",
+                            name: "role",
+                            message: "What will be the employee's new role?",
+                            choices: employeeRoles
+                        }
+                    ])
+        
+                    .then(res => {
+                        console.log(res);
+                        db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [res.role[0], res.employee[0]], (err, res) => {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.table(res);
+                                loadMainPrompt();
+                            }
+                        })
+                    })
                 }
+                
             })
-        })
     }
     })
 };

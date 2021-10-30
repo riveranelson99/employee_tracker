@@ -31,4 +31,21 @@
 -- GROUP BY department.id
 -- ORDER BY department.id;
 
-SELECT employee.id, first_name, last_name, title, role_id FROM employee;
+-- SELECT employee.id, first_name, last_name, title, role_id FROM employee;
+
+-- SELECT (
+--     SELECT employee.id, first_name, last_name, title, role_id FROM employee INNER JOIN role ON role_id = role.id
+-- ) AS employee_data,
+-- (
+--     SELECT role.id, role.title FROM role
+-- ) AS role_data;
+
+SELECT employee.id, first_name, last_name, role_id, title
+FROM employee
+INNER JOIN role
+ON employee.role_id = role.id;
+
+-- SELECT role.id, role.title
+-- FROM role
+-- INNER JOIN employee
+-- ON role.id = employee.role_id;
