@@ -123,7 +123,7 @@ function viewAllEmployees () {
         if (err) {
             console.log(err);
         } else {
-            console.table(res);
+            console.table('\n', res, '\n');
             loadMainPrompt();
         }
     })
@@ -150,7 +150,7 @@ function employeesDepartmentPrompt () {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.table(res);
+                        console.table('\n', res, '\n');
                         loadMainPrompt();
                     }
                 })
@@ -180,7 +180,7 @@ function employeesManagerPrompt () {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.table(res);
+                        console.table('\n', res, '\n');
                         loadMainPrompt();
                     }
                 })
@@ -358,11 +358,11 @@ function updateManagerPrompt () {
 };
 
 function viewAllRoles () {
-    db.query(`SELECT role.id, role.title, department.name, role.salary FROM role INNER JOIN department ON role.department_id = department.id;`, (err, res) => {
+    db.query(`SELECT role.id, role.title, department.name AS 'department', role.salary FROM role INNER JOIN department ON role.department_id = department.id;`, (err, res) => {
         if (err) {
             console.log(err);
         } else {
-            console.table(res);
+            console.table('\n', res, '\n');
             loadMainPrompt();
         }
     });
@@ -439,7 +439,7 @@ function viewAllDepartments () {
         if (err) {
             console.log(err);
         } else {
-            console.table(res);
+            console.table('\n', res, '\n');
             loadMainPrompt();
         }
     })
@@ -498,7 +498,7 @@ function viewTotalBudget () {
         if (err) {
             console.log(err);
         } else {
-            console.table(res);
+            console.table('\n', res, '\n');
             loadMainPrompt();
         }
     })
