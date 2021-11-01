@@ -1,10 +1,11 @@
+// Bring in all the necessary resources that allow the app to function properly
+// Ensure that the connection folder is linked to ensure sql queries
 const { prompt } = require("inquirer");
 const logo = require("asciiart-logo");
 const db = require("./db/connection");
 require("console.table");
 
-init();
-
+// App starts with a large logo prompt for nice aesthetics
 function init() {
     const logoText = logo({ name: "Employee Manager" }).render();
 
@@ -12,6 +13,7 @@ function init() {
     loadMainPrompt();
 }
 
+// The logo prompt is followed by the questions prompt that brings in all available choices to the user
 function loadMainPrompt() {
     prompt([
         {
@@ -83,6 +85,9 @@ function loadMainPrompt() {
         }
     ])
 
+    // Depending upon the user choice, this large if/else condition chain ensures that the appropriate function is called upon
+    // Every function is ended by calling upon the questions prompt
+    // The only way to end this app is to choose quit as an option
     .then(response => {
         if (response.choice === "VIEW_EMPLOYEES") {
             viewAllEmployees();
@@ -118,6 +123,7 @@ function loadMainPrompt() {
     })
 };
 
+// This functions purpose is to ensure that all employees available on the database are viewed
 function viewAllEmployees () {
     db.query(`SELECT employee.id, employee.first_name, employee.last_name , role.title, department.name AS 'department', role.salary, CONCAT(manager.first_name, " " , manager.last_name) AS 'manager' FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id;`, (err, res) => {
         if (err) {
@@ -129,6 +135,8 @@ function viewAllEmployees () {
     })
 };
 
+// This functions purpose is to view all employees based upon department selection
+// The departments are dynamically called upon for any instance the user has potentially chosen to add a new department prior to calling upon this feature
 function employeesDepartmentPrompt () {
     db.query(`SELECT department.id, department.name FROM department;`, (err, res) => {
         if (err) {
@@ -159,6 +167,11 @@ function employeesDepartmentPrompt () {
     })
 };
 
+// This functions purpose is to view all employees in relation to managers
+// The managers are dynamically called upon for any instance the user has added an employee who could potentially be a manager
+// That would be the case in which the user has selected the new employee to not have a manager, in that instance, that new employee is a manager
+// This function also calls on all active employees in the database should the user decide to see other employees
+// For any instance in which the employee selected isnt a manager, no data will simply be returned as the non-manager does not look over anyone
 function employeesManagerPrompt () {
     db.query(`SELECT employee.id, employee.first_name, employee.last_name FROM employee;`, (err, res) => {
         if (err) {
@@ -189,6 +202,8 @@ function employeesManagerPrompt () {
     })
 };
 
+// This functions purpose is to add a new employee to the database
+// Managers and roles are called upon dynamically for any instance in which the user has created any new employees or roles
 function addEmployeePrompt () {
     db.query(`SELECT role.id, role.title FROM role;`, (err, res) => {
         if (err) {
@@ -241,6 +256,8 @@ function addEmployeePrompt () {
     })
 };
 
+// This functions purpose is to remove any selected employee the user has chosen
+// The employees are dynamically called upon for any instance in which the user has created a new employee
 function removeEmployeePrompt () {
     db.query(`SELECT employee.id, first_name, last_name FROM employee`, (err, res) => {
         if (err) {
@@ -270,6 +287,8 @@ function removeEmployeePrompt () {
     })
 };
 
+// This functions purpose is to update an employees role in the database
+// As with previous functions, all employees are called upon dynamically
 function updateEmployeePrompt () {
     db.query(`SELECT employee.id, first_name, last_name FROM employee;`, (err, res) => {
         if (err) {
@@ -313,6 +332,8 @@ function updateEmployeePrompt () {
     })
 };
 
+// This functions purpose is to update an employees manager, even going so far as to update an employee with a manager to manager status
+// Managers and employees are called upon dynamically
 function updateManagerPrompt () {
     db.query(`SELECT employee.id, first_name, last_name FROM employee;`, (err,res) => {
         if (err) {
@@ -357,6 +378,7 @@ function updateManagerPrompt () {
     })
 };
 
+// This functions purpose is to view all available roles in the database
 function viewAllRoles () {
     db.query(`SELECT role.id, role.title, department.name AS 'department', role.salary FROM role INNER JOIN department ON role.department_id = department.id;`, (err, res) => {
         if (err) {
@@ -368,6 +390,8 @@ function viewAllRoles () {
     });
 };
 
+// This functions purpose is to add a role to the database
+// As roles are tied to department as well, the departments are called upon dynamically
 function addRolePrompt () {
     db.query(`SELECT department.id, department.name FROM department;`, (err, res) => {
         if (err) {
@@ -405,6 +429,8 @@ function addRolePrompt () {
     })
 };
 
+// This functions purpose is to remove any role from the database
+// Roles are dynamically called upon
 function removeRolePrompt () {
     db.query(`SELECT role.id, role.title FROM role`, (err, res) => {
         if (err) {
@@ -434,6 +460,7 @@ function removeRolePrompt () {
     })
 };
 
+// This functions purpose is to view all departments available to the database
 function viewAllDepartments () {
     db.query(`SELECT department.id, department.name FROM department;`, (err, res) => {
         if (err) {
@@ -445,6 +472,7 @@ function viewAllDepartments () {
     })
 };
 
+// This functions purpose is to add a department to the database
 function addDepartmentPrompt () {
     prompt([
         {
@@ -464,6 +492,8 @@ function addDepartmentPrompt () {
     })
 };
 
+// This functions purpose is to remove a department from the database
+// Departments are called upon dynamically
 function removeDepartmentPrompt () {
     db.query(`SELECT department.id, department.name FROM department;`, (err, res) => {
         if (err) {
@@ -493,6 +523,7 @@ function removeDepartmentPrompt () {
     })
 };
 
+// This functions purpose is to view to the total COMBINED budget of each department available in the database
 function viewTotalBudget () {
     db.query(`SELECT department.id, department.name, SUM(role.salary) AS utilized_budget FROM department, role WHERE role.department_id=department.id GROUP BY department.id ORDER BY department.id;`, (err, res) => {
         if (err) {
@@ -504,9 +535,13 @@ function viewTotalBudget () {
     })
 };
 
+// This functions purpose is to quit the app while also offering a parting greeting logo
+// Once again this is done for aesthetic purposes and a more pleasing app experience overall
 function quit () {
     const logoText = logo({ name: "Goodbye" }).render();
 
     console.log(logoText);
     process.exit();
 };
+
+init();

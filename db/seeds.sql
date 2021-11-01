@@ -1,3 +1,5 @@
+-- The Initial Information To Be Loaded Into The Databse --
+
 INSERT INTO department (name)
 VALUES ("Sales"),
        ("Engineering"),
