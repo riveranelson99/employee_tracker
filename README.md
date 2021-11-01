@@ -1,11 +1,8 @@
-# employee_tracker
+# Employee Tracker
+
 Building an app utilizing sql in order to track employee information.
 
 # Pseudo Code
-
-Node.js, Inquirer, and MySQL.
-
-create a walkthrough video that demonstrates its functionality and all of the following acceptance criteria being met. You’ll need to submit a link to the video and add it to the README of your project.
 
 * WANT to be able to view and manage the departments, roles, and employees in my company THAT I can organize and plan my business
 * WHEN the application is started, THEN the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role are presented
@@ -17,17 +14,14 @@ create a walkthrough video that demonstrates its functionality and all of the fo
 * WHEN an employee is added, THEN a prompt is given to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
 * WHEN an employee role is updated, THEN a prompt is given to select an employee to update and their new role and this information is updated in the database
 
-## Bonus
+# Screenshot
 
-Try to add some additional functionality to your application, such as the ability to do the following:
+![Sample](./assets/port-12-screenshot.png)
 
-* Update employee managers.
+# Demonstration
 
-* View employees by manager.
+![Demo](./assets/employee_tracker_demo-2.gif)
 
-* View employees by department.
+# Video
 
-* Delete departments, roles, and employees.
-
-* View the total utilized budget of a department&mdash;in other words, the combined salaries of all employees in that department.
-
+[Employee Tracker demonstration video link](https://drive.google.com/file/d/1--Oea0A8mTCCAknjfQmV0-MxPuaMA_m5/view?usp=sharing)
